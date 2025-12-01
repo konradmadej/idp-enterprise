@@ -1,0 +1,16 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: employee-performance-keyvault
+  description: Key Vault for Employee Performance data product
+  annotations:
+    azure.com/vault-name: kv-employee-perf-prod
+    azure.com/vault-uri: https://kv-employee-perf-prod.vault.azure.net/
+    azure.com/resource-group: rg-hr-prod
+    azure.com/subscription-id: b2c3d4e5-f6a7-5b6c-9d0e-1f2a3b4c5d6e
+    azure.com/location: westus2
+spec:
+  type: keyvault
+  lifecycle: production
+  owner: group:default/idpadmins
+  system: employee-performance

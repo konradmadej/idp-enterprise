@@ -1,0 +1,16 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: customer-satisfaction-keyvault
+  description: Key Vault for Customer Satisfaction data product
+  annotations:
+    azure.com/vault-name: kv-customer-sat-prod
+    azure.com/vault-uri: https://kv-customer-sat-prod.vault.azure.net/
+    azure.com/resource-group: rg-customer-service-prod
+    azure.com/subscription-id: e5f6a7b8-c9d0-8e9f-2a3b-4c5d6e7f8a9b
+    azure.com/location: westeurope
+spec:
+  type: keyvault
+  lifecycle: production
+  owner: group:default/idpadmins
+  system: customer-satisfaction

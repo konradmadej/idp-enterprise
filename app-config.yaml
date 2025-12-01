@@ -126,6 +126,11 @@ catalog:
       rules:
         - allow: [Location,System]
 
+    - type: file
+      target: ../../examples/components/keyvaults-location.yaml
+      rules:
+        - allow: [Location,Component]
+
     ## Uncomment these lines to add more example data
     # - type: url
     #   target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all.yaml

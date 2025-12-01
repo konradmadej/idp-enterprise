@@ -82,7 +82,8 @@ const app = createApp({
 const routes = (
   <FlatRoutes>
     <Route path="/" element={<HomePage />} />
-    <Route path="/catalog" element={<CustomCatalogPage />} />
+    <Route path="/catalog" element={<CatalogIndexPage />} />
+    <Route path="/data-products" element={<CustomCatalogPage />} />
     <Route
       path="/catalog/:namespace/:kind/:name"
       element={<CatalogEntityPage />}

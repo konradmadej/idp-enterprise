@@ -1,0 +1,16 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: inventory-optimization-keyvault
+  description: Key Vault for Inventory Optimization data product
+  annotations:
+    azure.com/vault-name: kv-inventory-opt-prod
+    azure.com/vault-uri: https://kv-inventory-opt-prod.vault.azure.net/
+    azure.com/resource-group: rg-supplychain-prod
+    azure.com/subscription-id: f6a7b8c9-d0e1-9f0a-3b4c-5d6e7f8a9b0c
+    azure.com/location: southeastasia
+spec:
+  type: keyvault
+  lifecycle: production
+  owner: group:default/idpadmins
+  system: inventory-optimization

@@ -1,45 +1,39 @@
 import React from 'react';
-import { CatalogFilterLayout } from '@backstage/plugin-catalog';
-import {
-  CatalogTable,
-  DefaultCatalogPageProps,
-} from '@backstage/plugin-catalog';
+import { CatalogTable } from '@backstage/plugin-catalog';
 import {
   EntityKindPicker,
   EntityListProvider,
   EntityOwnerPicker,
   EntityTagPicker,
   EntityTypePicker,
-  UserListFilterKind,
   UserListPicker,
-  CatalogFilterLayout as Layout,
+  CatalogFilterLayout,
+  EntitySearchBar,
 } from '@backstage/plugin-catalog-react';
 import { Content, PageWithHeader } from '@backstage/core-components';
 import { DomainPicker } from './DomainPicker';
 
-export const CustomCatalogPage = (props: DefaultCatalogPageProps) => {
+export const CustomCatalogPage = () => {
   return (
-    <PageWithHeader title="Catalog" themeId="home">
+    <PageWithHeader title="Data Products" themeId="home">
       <Content>
         <EntityListProvider>
-          <Layout>
-            <Layout.Filters>
-              <EntityKindPicker initialFilter="system" hidden />
+          <CatalogFilterLayout>
+            <CatalogFilterLayout.Filters>
+              <EntitySearchBar />
+              <EntityKindPicker initialFilter="system" />
               <EntityTypePicker />
               <UserListPicker
-                initialFilter={UserListFilterKind.Owned}
+                initialFilter="owned"
               />
               <EntityOwnerPicker />
               <DomainPicker />
               <EntityTagPicker />
-            </Layout.Filters>
-            <Layout.Content>
-              <CatalogTable
-                columns={props.columns}
-                actions={props.actions}
-              />
-            </Layout.Content>
-          </Layout>
+            </CatalogFilterLayout.Filters>
+            <CatalogFilterLayout.Content>
+              <CatalogTable />
+            </CatalogFilterLayout.Content>
+          </CatalogFilterLayout>
         </EntityListProvider>
       </Content>
     </PageWithHeader>

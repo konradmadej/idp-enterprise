@@ -1,0 +1,16 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: sales-pipeline-keyvault
+  description: Key Vault for Sales Pipeline data product
+  annotations:
+    azure.com/vault-name: kv-sales-pipeline-prod
+    azure.com/vault-uri: https://kv-sales-pipeline-prod.vault.azure.net/
+    azure.com/resource-group: rg-sales-prod
+    azure.com/subscription-id: c3d4e5f6-a7b8-6c7d-0e1f-2a3b4c5d6e7f
+    azure.com/location: centralus
+spec:
+  type: keyvault
+  lifecycle: production
+  owner: group:default/idpadmins
+  system: sales-pipeline

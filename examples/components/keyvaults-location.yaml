@@ -1,0 +1,25 @@
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: keyvaults-location
+  description: Location for all KeyVault component definitions
+spec:
+  targets:
+    # Finance domain KeyVaults
+    - ./keyvaults/revenue-analytics-kv.yaml
+    - ./keyvaults/financial-reporting-kv.yaml
+    # Human Resources domain KeyVaults
+    - ./keyvaults/employee-performance-kv.yaml
+    - ./keyvaults/workforce-planning-kv.yaml
+    # Sales domain KeyVaults
+    - ./keyvaults/customer-360-kv.yaml
+    - ./keyvaults/sales-pipeline-kv.yaml
+    # Marketing domain KeyVaults
+    - ./keyvaults/campaign-performance-kv.yaml
+    - ./keyvaults/customer-segmentation-kv.yaml
+    # Customer Service domain KeyVaults
+    - ./keyvaults/service-tickets-kv.yaml
+    - ./keyvaults/customer-satisfaction-kv.yaml
+    # Supply Chain domain KeyVaults
+    - ./keyvaults/inventory-optimization-kv.yaml
+    - ./keyvaults/supplier-performance-kv.yaml

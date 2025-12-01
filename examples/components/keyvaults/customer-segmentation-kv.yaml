@@ -1,0 +1,16 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: customer-segmentation-keyvault
+  description: Key Vault for Customer Segmentation data product
+  annotations:
+    azure.com/vault-name: kv-customer-seg-prod
+    azure.com/vault-uri: https://kv-customer-seg-prod.vault.azure.net/
+    azure.com/resource-group: rg-marketing-prod
+    azure.com/subscription-id: d4e5f6a7-b8c9-7d8e-1f2a-3b4c5d6e7f8a
+    azure.com/location: northeurope
+spec:
+  type: keyvault
+  lifecycle: production
+  owner: group:default/idpadmins
+  system: customer-segmentation

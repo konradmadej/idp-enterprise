@@ -1,0 +1,16 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: revenue-analytics-keyvault
+  description: Key Vault for Revenue Analytics data product
+  annotations:
+    azure.com/vault-name: kv-revenue-analytics-prod
+    azure.com/vault-uri: https://kv-revenue-analytics-prod.vault.azure.net/
+    azure.com/resource-group: rg-finance-prod
+    azure.com/subscription-id: a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d
+    azure.com/location: eastus
+spec:
+  type: keyvault
+  lifecycle: production
+  owner: group:default/idpadmins
+  system: revenue-analytics
