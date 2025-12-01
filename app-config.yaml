@@ -55,6 +55,14 @@ proxy:
   #     target: 'https://example.com'
   #     changeOrigin: true
 
+  endpoints:
+    '/keyvault-api':
+      target: 'https://someapi.com'
+      changeOrigin: true
+      headers:
+        # Add any required authentication headers here
+        # Authorization: 'Bearer ${KEYVAULT_API_TOKEN}'
+
 # Reference documentation http://backstage.io/docs/features/techdocs/configuration
 # Note: After experimenting with basic setup, use CI/CD to generate docs
 # and an external cloud storage when deploying TechDocs for production use-case.
@@ -97,6 +105,12 @@ catalog:
     # Local example template
     - type: file
       target: ../../examples/template/template.yaml
+      rules:
+        - allow: [Template]
+
+    # Key Vault request template
+    - type: file
+      target: ../../examples/templates/keyvault-request/template.yaml
       rules:
         - allow: [Template]
 

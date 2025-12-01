@@ -1,0 +1,146 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: keyvault-request
+  title: Request Key Vault for Data Product
+  description: Request a new Azure Key Vault for an existing data product system
+  tags:
+    - azure
+    - keyvault
+    - data-product
+spec:
+  owner: group:default/idpadmins
+  type: service
+
+  parameters:
+    - title: Select Data Product
+      required:
+        - system
+      properties:
+        system:
+          title: Data Product System
+          type: string
+          description: Select the data product system that needs a Key Vault
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              - kind: System
+            defaultKind: System
+
+    - title: Key Vault Configuration
+      required:
+        - vaultName
+        - location
+        - environment
+      properties:
+        vaultName:
+          title: Key Vault Name
+          type: string
+          description: Name for the Key Vault (must be globally unique, 3-24 characters, alphanumeric and hyphens)
+          pattern: '^[a-zA-Z0-9-]{3,24}$'
+          ui:help: 'Example: kv-myproduct-prod'
+
+        location:
+          title: Azure Region
+          type: string
+          description: Azure region where the Key Vault will be created
+          default: eastus
+          enum:
+            - eastus
+            - westus2
+            - centralus
+            - northeurope
+            - westeurope
+            - southeastasia
+          enumNames:
+            - 'East US'
+            - 'West US 2'
+            - 'Central US'
+            - 'North Europe'
+            - 'West Europe'
+            - 'Southeast Asia'
+
+        environment:
+          title: Environment
+          type: string
+          description: Environment for the Key Vault
+          default: production
+          enum:
+            - development
+            - staging
+            - production
+          enumNames:
+            - Development
+            - Staging
+            - Production
+
+        resourceGroup:
+          title: Resource Group (Optional)
+          type: string
+          description: Azure resource group name. If not provided, will be derived from the system domain.
+          ui:help: 'Leave empty to auto-generate based on domain'
+
+    - title: Additional Information
+      properties:
+        description:
+          title: Description
+          type: string
+          description: Brief description of what this Key Vault will be used for
+          ui:widget: textarea
+          ui:options:
+            rows: 3
+
+  steps:
+    - id: fetch-system-entity
+      name: Fetch System Entity from Catalog
+      action: http:backstage:request
+      input:
+        method: GET
+        path: '/api/catalog/entities/by-name/${{ parameters.system }}'
+
+    - id: extract-cid
+      name: Extract CID from System
+      action: debug:log
+      input:
+        message: 'System CID: ${{ steps["fetch-system-entity"].output.body.metadata.annotations["idp.company/cid"] }}'
+
+    - id: create-keyvault
+      name: Call Key Vault Creation API
+      action: http:backstage:request
+      input:
+        method: POST
+        path: '/api/proxy/keyvault-api/keyvault/create'
+        headers:
+          Content-Type: 'application/json'
+        body:
+          cid: ${{ steps["fetch-system-entity"].output.body.metadata.annotations["idp.company/cid"] }}
+          vaultName: ${{ parameters.vaultName }}
+          location: ${{ parameters.location }}
+          environment: ${{ parameters.environment }}
+          resourceGroup: ${{ parameters.resourceGroup || steps["fetch-system-entity"].output.body.spec.domain }}
+          systemName: ${{ steps["fetch-system-entity"].output.body.metadata.name }}
+          businessOwner: ${{ steps["fetch-system-entity"].output.body.metadata.annotations["idp.company/business-owner"] }}
+          technicalOwner: ${{ steps["fetch-system-entity"].output.body.metadata.annotations["idp.company/technical-owner"] }}
+          description: ${{ parameters.description }}
+
+  output:
+    links:
+      - title: View Parent System
+        icon: dashboard
+        entityRef: ${{ parameters.system }}
+
+    text:
+      - title: Key Vault Request Summary
+        content: |
+          ## Key Vault Created Successfully
+
+          A Key Vault has been created with the following details:
+
+          - **Vault Name**: ${{ parameters.vaultName }}
+          - **System**: ${{ steps["fetch-system-entity"].output.body.metadata.name }}
+          - **CID**: ${{ steps["fetch-system-entity"].output.body.metadata.annotations["idp.company/cid"] }}
+          - **Location**: ${{ parameters.location }}
+          - **Environment**: ${{ parameters.environment }}
+          - **Resource Group**: ${{ parameters.resourceGroup || steps["fetch-system-entity"].output.body.spec.domain }}
+
+          **API Response**: ${{ steps["create-keyvault"].output.body }}
