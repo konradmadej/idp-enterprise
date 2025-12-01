@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: customer-360
+  description: Customer 360 analytics data product
+  annotations:
+    idp.company/business-owner: matthew.taylor@company.com
+    idp.company/technical-owner: emma.rodriguez@company.com
+    idp.company/cid: CID-30001
+spec:
+  owner: group:default/idpadmins
+  domain: sales

@@ -1,0 +1,7 @@
+apiVersion: backstage.io/v1alpha1
+kind: Domain
+metadata:
+  name: Sales
+  description: Sales and revenue data products
+spec:
+  owner: default/idpusers

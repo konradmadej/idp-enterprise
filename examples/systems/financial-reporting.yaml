@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: financial-reporting
+  description: Financial reporting and compliance data product
+  annotations:
+    idp.company/business-owner: david.miller@company.com
+    idp.company/technical-owner: lisa.wang@company.com
+    idp.company/cid: CID-10002
+spec:
+  owner: group:default/idpadmins
+  domain: finance

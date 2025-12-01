@@ -105,6 +105,26 @@ catalog:
       target: ../../examples/org.yaml
       rules:
         - allow: [User, Group]
+    
+    - type: file
+      target: ../../examples/domains.yaml
+      rules:
+        - allow: [Domain]
+
+    - type: file
+      target: ../../examples/domains-location.yaml
+      rules:
+        - allow: [Location,Domain]
+
+    - type: file
+      target: ../../examples/data_products.yaml
+      rules:
+        - allow: [System]
+
+    - type: file
+      target: ../../examples/systems-location.yaml
+      rules:
+        - allow: [Location,System]
 
     ## Uncomment these lines to add more example data
     # - type: url

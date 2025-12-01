@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: revenue-analytics
+  description: Revenue and earnings analytics data product
+  annotations:
+    idp.company/business-owner: sarah.johnson@company.com
+    idp.company/technical-owner: michael.chen@company.com
+    idp.company/cid: CID-10001
+spec:
+  owner: group:default/idpadmins
+  domain: finance

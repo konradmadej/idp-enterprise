@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: accounts-receivable
+  description: Accounts receivable analytics data product
+  annotations:
+    idp.company/business-owner: emily.davis@company.com
+    idp.company/technical-owner: james.thompson@company.com
+    idp.company/cid: CID-10004
+spec:
+  owner: group:default/idpadmins
+  domain: finance

@@ -6,3 +6,7 @@ packages/*/src
 packages/*/node_modules
 plugins
 *.local.yaml
+dist-types
+plugins/*/dist
+plugins/*/node_modules
+*.local.yaml

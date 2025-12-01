@@ -24,6 +24,8 @@ import { apis } from './apis';
 import { entityPage } from './components/catalog/EntityPage';
 import { searchPage } from './components/search/SearchPage';
 import { Root } from './components/Root';
+import { HomePage } from './components/home/HomePage';
+import { CustomCatalogPage } from './components/catalog/CustomCatalogPage';
 
 import {
   AlertDisplay,
@@ -79,8 +81,8 @@ const app = createApp({
 
 const routes = (
   <FlatRoutes>
-    <Route path="/" element={<Navigate to="catalog" />} />
-    <Route path="/catalog" element={<CatalogIndexPage />} />
+    <Route path="/" element={<HomePage />} />
+    <Route path="/catalog" element={<CustomCatalogPage />} />
     <Route
       path="/catalog/:namespace/:kind/:name"
       element={<CatalogEntityPage />}

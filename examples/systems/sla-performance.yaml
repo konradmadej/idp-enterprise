@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: sla-performance
+  description: SLA performance tracking data product
+  annotations:
+    idp.company/business-owner: lauren.green@company.com
+    idp.company/technical-owner: justin.baker@company.com
+    idp.company/cid: CID-50003
+spec:
+  owner: group:default/idpadmins
+  domain: customerservice

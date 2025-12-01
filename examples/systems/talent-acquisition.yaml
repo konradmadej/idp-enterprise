@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: talent-acquisition
+  description: Talent acquisition metrics and analytics data product
+  annotations:
+    idp.company/business-owner: jennifer.wilson@company.com
+    idp.company/technical-owner: daniel.kim@company.com
+    idp.company/cid: CID-20003
+spec:
+  owner: group:default/idpadmins
+  domain: humanresources

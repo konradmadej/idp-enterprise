@@ -1,0 +1,7 @@
+apiVersion: backstage.io/v1alpha1
+kind: Domain
+metadata:
+  name: HumanResources
+  description: Human Resources and workforce data products
+spec:
+  owner: default/idpusers

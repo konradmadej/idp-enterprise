@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: compensation-analytics
+  description: Compensation and benefits analytics data product
+  annotations:
+    idp.company/business-owner: christopher.anderson@company.com
+    idp.company/technical-owner: olivia.patel@company.com
+    idp.company/cid: CID-20004
+spec:
+  owner: group:default/idpadmins
+  domain: humanresources

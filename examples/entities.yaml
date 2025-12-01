@@ -39,3 +39,4 @@ spec:
     message ExampleMessage {
       string example = 1;
     };
+

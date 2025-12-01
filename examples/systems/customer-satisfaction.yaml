@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: customer-satisfaction
+  description: Customer satisfaction metrics data product
+  annotations:
+    idp.company/business-owner: rachel.wright@company.com
+    idp.company/technical-owner: nathan.scott@company.com
+    idp.company/cid: CID-50002
+spec:
+  owner: group:default/idpadmins
+  domain: customerservice

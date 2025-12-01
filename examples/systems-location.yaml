@@ -1,0 +1,33 @@
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: systems-location
+  description: Location for all data product system definitions
+spec:
+  targets:
+    # Finance domain
+    - ./systems/revenue-analytics.yaml
+    - ./systems/financial-reporting.yaml
+    - ./systems/budget-planning.yaml
+    - ./systems/accounts-receivable.yaml
+    # Human Resources domain
+    - ./systems/employee-performance.yaml
+    - ./systems/workforce-planning.yaml
+    - ./systems/talent-acquisition.yaml
+    - ./systems/compensation-analytics.yaml
+    # Sales domain
+    - ./systems/customer-360.yaml
+    - ./systems/sales-pipeline.yaml
+    - ./systems/territory-performance.yaml
+    # Marketing domain
+    - ./systems/campaign-performance.yaml
+    - ./systems/customer-segmentation.yaml
+    - ./systems/digital-marketing.yaml
+    # Customer Service domain
+    - ./systems/service-tickets.yaml
+    - ./systems/customer-satisfaction.yaml
+    - ./systems/sla-performance.yaml
+    # Supply Chain domain
+    - ./systems/inventory-optimization.yaml
+    - ./systems/supplier-performance.yaml
+    - ./systems/logistics-analytics.yaml

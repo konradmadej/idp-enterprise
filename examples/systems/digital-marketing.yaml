@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: digital-marketing
+  description: Digital marketing metrics and analytics data product
+  annotations:
+    idp.company/business-owner: nicole.hall@company.com
+    idp.company/technical-owner: ryan.allen@company.com
+    idp.company/cid: CID-40003
+spec:
+  owner: group:default/idpadmins
+  domain: marketing

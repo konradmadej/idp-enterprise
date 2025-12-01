@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: sales-pipeline
+  description: Sales pipeline analytics data product
+  annotations:
+    idp.company/business-owner: andrew.thomas@company.com
+    idp.company/technical-owner: isabella.lopez@company.com
+    idp.company/cid: CID-30002
+spec:
+  owner: group:default/idpadmins
+  domain: sales

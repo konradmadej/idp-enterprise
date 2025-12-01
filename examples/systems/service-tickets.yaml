@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: service-tickets
+  description: Service ticket analytics data product
+  annotations:
+    idp.company/business-owner: brandon.young@company.com
+    idp.company/technical-owner: charlotte.king@company.com
+    idp.company/cid: CID-50001
+spec:
+  owner: group:default/idpadmins
+  domain: customerservice

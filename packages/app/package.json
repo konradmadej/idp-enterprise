@@ -27,6 +27,7 @@
     "@backstage/plugin-catalog-graph": "^0.5.3",
     "@backstage/plugin-catalog-import": "^0.13.7",
     "@backstage/plugin-catalog-react": "^1.21.3",
+    "@backstage/plugin-home": "^0.8.14",
     "@backstage/plugin-kubernetes": "^0.12.13",
     "@backstage/plugin-notifications": "^0.5.11",
     "@backstage/plugin-org": "^0.6.46",

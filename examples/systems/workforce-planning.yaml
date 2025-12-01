@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: workforce-planning
+  description: Workforce planning and capacity analytics data product
+  annotations:
+    idp.company/business-owner: william.martinez@company.com
+    idp.company/technical-owner: sophia.nguyen@company.com
+    idp.company/cid: CID-20002
+spec:
+  owner: group:default/idpadmins
+  domain: humanresources

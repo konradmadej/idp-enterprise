@@ -1,0 +1,7 @@
+apiVersion: backstage.io/v1alpha1
+kind: Domain
+metadata:
+  name: SupplyChain
+  description: Supply Chain data products
+spec:
+  owner: default/idpusers

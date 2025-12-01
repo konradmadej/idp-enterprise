@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: territory-performance
+  description: Sales territory performance analytics data product
+  annotations:
+    idp.company/business-owner: joshua.white@company.com
+    idp.company/technical-owner: mia.hernandez@company.com
+    idp.company/cid: CID-30003
+spec:
+  owner: group:default/idpadmins
+  domain: sales

@@ -1,0 +1,39 @@
+
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: "1234567890"
+  title: Simple Data Product
+  description: "Product CIID: 1234567890\nUAT Environment"
+  annotations:
+    gsk.com/ciid: "1234567890"
+  labels:
+    gsk.com/ciid: "1234567890"
+  links:
+    - url: https://example.com/data-products/1234567890
+      title: ARB1
+spec:
+  owner: default/idpusers
+  domain: SupplyChain
+  type: data-product
+
+
+
+---
+
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: ComplexDataProduct
+  ciid: 1234567890
+  description: >
+    Product CIID: 1234567890
+    PROD Environment
+  annotations:
+    gsk.com/ciid: "1234567890"
+  labels:
+    gsk.com/ciid: "1234567890"
+spec:
+  owner: default/idpusers
+  domain: SupplyChain
+  type: data-product

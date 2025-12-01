@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: domains-location
+  description: Location for all domain definitions
+spec:
+  targets:
+    - ./domains/finance.yaml
+    - ./domains/humanresources.yaml
+    - ./domains/sales.yaml
+    - ./domains/marketing.yaml
+    - ./domains/customerservice.yaml

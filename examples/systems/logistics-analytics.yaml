@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: logistics-analytics
+  description: Logistics and transportation analytics data product
+  annotations:
+    idp.company/business-owner: kimberly.perez@company.com
+    idp.company/technical-owner: jacob.roberts@company.com
+    idp.company/cid: CID-60003
+spec:
+  owner: group:default/idpadmins
+  domain: supplychain

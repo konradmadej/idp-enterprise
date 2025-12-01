@@ -1,0 +1,7 @@
+apiVersion: backstage.io/v1alpha1
+kind: Domain
+metadata:
+  name: Marketing
+  description: Marketing and customer engagement data products
+spec:
+  owner: default/idpusers

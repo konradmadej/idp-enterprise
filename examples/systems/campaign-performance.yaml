@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: campaign-performance
+  description: Marketing campaign performance analytics data product
+  annotations:
+    idp.company/business-owner: amanda.harris@company.com
+    idp.company/technical-owner: ethan.clark@company.com
+    idp.company/cid: CID-40001
+spec:
+  owner: group:default/idpadmins
+  domain: marketing

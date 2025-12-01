@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: customer-segmentation
+  description: Customer segmentation and targeting data product
+  annotations:
+    idp.company/business-owner: stephanie.lewis@company.com
+    idp.company/technical-owner: alexander.walker@company.com
+    idp.company/cid: CID-40002
+spec:
+  owner: group:default/idpadmins
+  domain: marketing
