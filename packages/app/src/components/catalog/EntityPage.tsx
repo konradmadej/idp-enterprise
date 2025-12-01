@@ -59,6 +59,8 @@ import {
 } from '@backstage/plugin-kubernetes';
 
 import { DataProductMetadataCard } from './DataProductMetadataCard';
+import { KeyVaultMetadataCard } from './KeyVaultMetadataCard';
+import { AzurePortalLinksCard } from './AzurePortalLinksCard';
 
 const techdocsContent = (
   <EntityTechdocsContent>
@@ -245,6 +247,32 @@ const defaultEntityPage = (
   </EntityLayout>
 );
 
+const keyvaultEntityPage = (
+  <EntityLayout>
+    <EntityLayout.Route path="/" title="Overview">
+      <Grid container spacing={3} alignItems="stretch">
+        {entityWarningContent}
+        <Grid item md={6}>
+          <EntityAboutCard variant="gridItem" />
+        </Grid>
+        <Grid item md={6} xs={12}>
+          <KeyVaultMetadataCard variant="gridItem" />
+        </Grid>
+        <Grid item md={6} xs={12}>
+          <AzurePortalLinksCard variant="gridItem" />
+        </Grid>
+        <Grid item md={6} xs={12}>
+          <EntityCatalogGraphCard variant="gridItem" height={400} />
+        </Grid>
+      </Grid>
+    </EntityLayout.Route>
+
+    <EntityLayout.Route path="/docs" title="Docs">
+      {techdocsContent}
+    </EntityLayout.Route>
+  </EntityLayout>
+);
+
 const componentPage = (
   <EntitySwitch>
     <EntitySwitch.Case if={isComponentType('service')}>
@@ -253,6 +281,10 @@ const componentPage = (
 
     <EntitySwitch.Case if={isComponentType('website')}>
       {websiteEntityPage}
+    </EntitySwitch.Case>
+
+    <EntitySwitch.Case if={isComponentType('keyvault')}>
+      {keyvaultEntityPage}
     </EntitySwitch.Case>
 
     <EntitySwitch.Case>{defaultEntityPage}</EntitySwitch.Case>
