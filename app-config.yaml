@@ -160,10 +160,12 @@ catalog:
         tenantId: ${AZURE_TENANT_ID}
         user:
           path: /groups/{90733c56-20c9-453b-9a78-2f145da29ea0}/transitiveMembers/microsoft.graph.user
+          # Fetch onPremisesImmutableId as employee ID
+          select: ["id", "displayName", "mail", "userPrincipalName", "onPremisesImmutableId", "employeeId"]
         group:
           path: /groups/{90733c56-20c9-453b-9a78-2f145da29ea0}/transitiveMembers/microsoft.graph.group
         schedule:
-          frequency: PT1H
+          frequency: PT1M
           timeout: PT50M
 
 kubernetes:

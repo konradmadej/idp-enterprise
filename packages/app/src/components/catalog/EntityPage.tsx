@@ -35,6 +35,7 @@ import {
 } from '@backstage/plugin-org';
 import { EntityTechdocsContent } from '@backstage/plugin-techdocs';
 import { EmptyState } from '@backstage/core-components';
+import { EmployeeIdCard } from './EmployeeIdCard';
 import {
   Direction,
   EntityCatalogGraphCard,
@@ -336,6 +337,9 @@ const userPage = (
         </Grid>
         <Grid item xs={12} md={6}>
           <EntityOwnershipCard variant="gridItem" />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <EmployeeIdCard />
         </Grid>
       </Grid>
     </EntityLayout.Route>
