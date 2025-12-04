@@ -8,5 +8,5 @@ metadata:
     idp.company/technical-owner: emma.rodriguez@company.com
     idp.company/cid: CID-30001
 spec:
-  owner: group:default/idpadmins
+  owner: group:default/other-team
   domain: sales

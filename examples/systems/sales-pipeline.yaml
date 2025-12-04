@@ -8,5 +8,5 @@ metadata:
     idp.company/technical-owner: isabella.lopez@company.com
     idp.company/cid: CID-30002
 spec:
-  owner: group:default/idpadmins
+  owner: group:default/other-team
   domain: sales

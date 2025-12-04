@@ -8,5 +8,5 @@ metadata:
     idp.company/technical-owner: charlotte.king@company.com
     idp.company/cid: CID-50001
 spec:
-  owner: group:default/idpadmins
+  owner: group:default/other-team
   domain: customerservice

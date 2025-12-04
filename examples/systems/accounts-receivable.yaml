@@ -7,6 +7,7 @@ metadata:
     idp.company/business-owner: emily.davis@company.com
     idp.company/technical-owner: james.thompson@company.com
     idp.company/cid: CID-10004
+    backstage.io/source-location: url:https://github.com/CandF-Experiments/nodejs-app2
 spec:
   owner: group:default/idpadmins
   domain: finance

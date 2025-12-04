@@ -21,10 +21,10 @@ spec:
           title: Data Product System
           type: string
           description: Select the data product system that needs a Key Vault
-          ui:field: EntityPicker
+          ui:field: OwnedEntityPicker
           ui:options:
             catalogFilter:
-              - kind: System
+              kind: System
             defaultKind: System
 
     - title: Key Vault Configuration
@@ -123,11 +123,21 @@ spec:
           technicalOwner: ${{ steps["fetch-system-entity"].output.body.metadata.annotations["idp.company/technical-owner"] }}
           description: ${{ parameters.description }}
 
+    - id: register-component
+      name: Register Component in Catalog
+      action: catalog:register
+      input:
+        catalogInfoUrl: https://github.com/${{ (parameters.system | parseEntityRef).name }}/blob/main/keyvaults/${{ parameters.vaultName }}-catalog-info.yaml
+        optional: true
+
   output:
     links:
       - title: View Parent System
         icon: dashboard
         entityRef: ${{ parameters.system }}
+      - title: View Key Vault Component
+        icon: catalog
+        entityRef: ${{ steps['register-component'].output.entityRef }}
 
     text:
       - title: Key Vault Request Summary
