@@ -1,0 +1,212 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: fastapi-app
+  title: Create FastAPI Application
+  description: Create a new FastAPI application with Kubernetes infrastructure and CI/CD pipeline
+  tags:
+    - fastapi
+    - python
+    - kubernetes
+    - recommended
+spec:
+  owner: group:default/idpadmins
+  type: service
+
+  parameters:
+    - title: Application Information
+      required:
+        - name
+        - description
+        - owner
+        - system
+      properties:
+        name:
+          title: Application Name
+          type: string
+          description: Unique name for your FastAPI application
+          pattern: '^[a-z0-9-]+$'
+          ui:help: 'Lowercase letters, numbers, and hyphens only'
+          ui:autofocus: true
+
+        description:
+          title: Description
+          type: string
+          description: Brief description of what this application does
+          ui:widget: textarea
+          ui:options:
+            rows: 3
+
+        owner:
+          title: Owner
+          type: string
+          description: Select the team that will own this application
+          ui:field: OwnerPicker
+          ui:options:
+            catalogFilter:
+              kind: Group
+
+        system:
+          title: System
+          type: string
+          description: Select the system this application belongs to
+          ui:field: OwnedEntityPicker
+          ui:options:
+            catalogFilter:
+              kind: System
+            defaultKind: System
+
+    - title: Repository Configuration
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+            allowedOwners:
+              - konradmadej
+
+    - title: Kubernetes Configuration
+      required:
+        - namespace
+        - environment
+      properties:
+        namespace:
+          title: Kubernetes Namespace
+          type: string
+          description: Namespace for the application (will be created if it doesn't exist)
+          pattern: '^[a-z0-9-]+$'
+          ui:help: 'Lowercase letters, numbers, and hyphens only'
+
+        environment:
+          title: Environment
+          type: string
+          description: Target environment
+          default: development
+          enum:
+            - development
+            - staging
+            - production
+          enumNames:
+            - Development
+            - Staging
+            - Production
+
+        replicas:
+          title: Number of Replicas
+          type: integer
+          description: Number of pod replicas to run
+          default: 2
+          minimum: 1
+          maximum: 10
+
+  steps:
+    - id: fetch-base
+      name: Fetch FastAPI Template
+      action: fetch:template
+      input:
+        url: ./content
+        values:
+          name: ${{ parameters.name }}
+          description: ${{ parameters.description }}
+          owner: ${{ parameters.owner }}
+          system: ${{ parameters.system }}
+          namespace: ${{ parameters.namespace }}
+          environment: ${{ parameters.environment }}
+          replicas: ${{ parameters.replicas }}
+          repoUrl: ${{ parameters.repoUrl }}
+
+    - id: publish
+      name: Publish to GitHub
+      action: publish:github
+      input:
+        allowedHosts: ['github.com']
+        description: ${{ parameters.description }}
+        repoUrl: ${{ parameters.repoUrl }}
+        defaultBranch: main
+        repoVisibility: public
+        deleteBranchOnMerge: true
+        protectDefaultBranch: false
+
+    - id: trigger-infra-creation
+      name: Trigger Kubernetes Infrastructure Creation
+      action: github:actions:dispatch
+      input:
+        workflowId: create-infrastructure.yml
+        repoUrl: ${{ parameters.repoUrl }}
+        branchOrTagName: main
+        workflowInputs:
+          namespace: ${{ parameters.namespace }}
+          environment: ${{ parameters.environment }}
+          app_name: ${{ parameters.name }}
+
+    - id: wait-for-infra
+      name: Wait for Infrastructure Creation
+      action: debug:wait
+      input:
+        seconds: 10
+
+    - id: trigger-deployment
+      name: Trigger Initial Build and Deployment
+      action: github:actions:dispatch
+      input:
+        workflowId: build-and-deploy.yml
+        repoUrl: ${{ parameters.repoUrl }}
+        branchOrTagName: main
+        workflowInputs:
+          environment: ${{ parameters.environment }}
+
+    - id: register
+      name: Register Component in Catalog
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps['publish'].output.repoContentsUrl }}
+        catalogInfoPath: '/catalog-info.yaml'
+
+  output:
+    links:
+      - title: Repository
+        url: ${{ steps['publish'].output.remoteUrl }}
+        icon: github
+      - title: View Component
+        icon: catalog
+        entityRef: ${{ steps['register'].output.entityRef }}
+      - title: Infrastructure Workflow
+        url: ${{ steps['trigger-infra-creation'].output.htmlUrl }}
+        icon: dashboard
+      - title: Deployment Workflow
+        url: ${{ steps['trigger-deployment'].output.htmlUrl }}
+        icon: dashboard
+
+    text:
+      - title: FastAPI Application Created Successfully
+        content: |
+          ## Your FastAPI Application is Ready! 🚀
+
+          A new FastAPI application has been created with the following details:
+
+          - **Application Name**: ${{ parameters.name }}
+          - **Repository**: ${{ steps['publish'].output.remoteUrl }}
+          - **Namespace**: ${{ parameters.namespace }}
+          - **Environment**: ${{ parameters.environment }}
+          - **Replicas**: ${{ parameters.replicas }}
+
+          ### Next Steps:
+
+          1. **Infrastructure Setup**: GitHub Action is creating the Kubernetes namespace
+          2. **Initial Deployment**: The application is being built and deployed
+          3. **Monitor Progress**: Check the workflow runs in GitHub Actions
+
+          The application will be available at: `http://${{ parameters.name }}.${{ parameters.namespace }}.svc.cluster.local:8000`
+
+          ### What was created:
+
+          - ✅ GitHub repository with FastAPI boilerplate
+          - ✅ Kubernetes manifests (Deployment, Service, Ingress)
+          - ✅ CI/CD workflows (Build, Test, Deploy)
+          - ✅ Dockerfile optimized for FastAPI
+          - ✅ Component registered in Backstage catalog

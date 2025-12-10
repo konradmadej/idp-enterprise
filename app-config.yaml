@@ -93,6 +93,13 @@ auth:
 scaffolder:
   # see https://backstage.io/docs/features/software-templates/configuration for software template options
 
+# Azure API configuration for internal resource management
+azureApi:
+  apiUrl: ${AZURE_INTERNAL_API_URL}
+  clientId: ${AZURE_API_CLIENT_ID}
+  clientSecret: ${AZURE_API_CLIENT_SECRET}
+  tenantId: ${AZURE_API_TENANT_ID}
+
 catalog:
   import:
     entityFilename: catalog-info.yaml
@@ -113,6 +120,12 @@ catalog:
     # Key Vault request template
     - type: file
       target: ../../examples/templates/keyvault-request/template.yaml
+      rules:
+        - allow: [Template]
+
+    # FastAPI application template
+    - type: file
+      target: ../../examples/templates/fastapi-app/template.yaml
       rules:
         - allow: [Template]
 

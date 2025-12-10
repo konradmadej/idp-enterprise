@@ -1,0 +1,43 @@
+name: Create Infrastructure
+
+on:
+  workflow_dispatch:
+    inputs:
+      namespace:
+        description: 'Kubernetes namespace to create'
+        required: true
+      environment:
+        description: 'Environment'
+        required: true
+      app_name:
+        description: 'Application name'
+        required: true
+
+jobs:
+  create-namespace:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Configure kubectl
+        run: |
+          echo "{% raw %}${{ secrets.KUBECONFIG }}{% endraw %}" | base64 -d > /tmp/kubeconfig
+          echo "KUBECONFIG=/tmp/kubeconfig" >> $GITHUB_ENV
+
+      - name: Create namespace
+        run: |
+          kubectl apply -f k8s/namespace.yaml
+
+      - name: Verify namespace
+        run: |
+          kubectl get namespace {% raw %}${{ inputs.namespace }}{% endraw %}
+          echo "Namespace {% raw %}${{ inputs.namespace }}{% endraw %} created successfully!"
+
+      - name: Create namespace resources
+        run: |
+          # Create any additional namespace-level resources here
+          # such as resource quotas, network policies, etc.
+          echo "Infrastructure setup complete for {% raw %}${{ inputs.app_name }}{% endraw %}"

@@ -63,6 +63,9 @@ import { DataProductMetadataCard } from './DataProductMetadataCard';
 import { KeyVaultMetadataCard } from './KeyVaultMetadataCard';
 import { AzurePortalLinksCard } from './AzurePortalLinksCard';
 
+import { EntityTeamPullRequestsCard } from '@backstage-community/plugin-github-pull-requests-board';
+
+
 const techdocsContent = (
   <EntityTechdocsContent>
     <TechDocsAddons>
@@ -347,7 +350,8 @@ const userPage = (
 );
 
 const groupPage = (
-  <EntityLayout>
+
+    <EntityLayout>
     <EntityLayout.Route path="/" title="Overview">
       <Grid container spacing={3}>
         {entityWarningContent}
@@ -355,13 +359,15 @@ const groupPage = (
           <EntityGroupProfileCard variant="gridItem" />
         </Grid>
         <Grid item xs={12} md={6}>
-          <EntityOwnershipCard variant="gridItem" />
+          <EntityOwnershipCard
+            variant="gridItem"
+          />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12}>
           <EntityMembersListCard />
         </Grid>
-        <Grid item xs={12} md={6}>
-          <EntityLinksCard />
+        <Grid item xs={12}>
+          <EntityTeamPullRequestsCard />
         </Grid>
       </Grid>
     </EntityLayout.Route>
