@@ -17,9 +17,13 @@ export async function createRouter(
 ): Promise<express.Router> {
   const { logger, config } = options;
 
+  logger.info('Creating Azure API router');
+
   const azureClient = new AzureApiClient(config, logger);
   const router = Router();
   router.use(express.json());
+
+  logger.info('Azure API router created, registering endpoints');
 
   /**
    * POST /api/azure-api/create-keyvault

@@ -18,14 +18,34 @@ export class AzureApiClient {
     // Read configuration
     const azureApiConfig = config.getOptionalConfig('azureApi');
     if (!azureApiConfig) {
-      throw new Error('Azure API configuration not found in app-config.yaml');
+      const errorMsg = 'Azure API configuration not found in app-config.yaml. Please add the azureApi section with apiUrl, clientId, clientSecret, and tenantId.';
+      this.logger.error(errorMsg);
+      throw new Error(errorMsg);
+    }
+
+    // Validate all required fields
+    const missingFields: string[] = [];
+    const apiUrl = azureApiConfig.getOptionalString('apiUrl');
+    const clientId = azureApiConfig.getOptionalString('clientId');
+    const clientSecret = azureApiConfig.getOptionalString('clientSecret');
+    const tenantId = azureApiConfig.getOptionalString('tenantId');
+
+    if (!apiUrl) missingFields.push('apiUrl');
+    if (!clientId) missingFields.push('clientId');
+    if (!clientSecret) missingFields.push('clientSecret');
+    if (!tenantId) missingFields.push('tenantId');
+
+    if (missingFields.length > 0) {
+      const errorMsg = `Azure API configuration is incomplete. Missing fields: ${missingFields.join(', ')}. Please check your app-config.yaml and environment variables.`;
+      this.logger.error(errorMsg);
+      throw new Error(errorMsg);
     }
 
     this.config = {
-      apiUrl: azureApiConfig.getString('apiUrl'),
-      clientId: azureApiConfig.getString('clientId'),
-      clientSecret: azureApiConfig.getString('clientSecret'),
-      tenantId: azureApiConfig.getString('tenantId'),
+      apiUrl: apiUrl!,
+      clientId: clientId!,
+      clientSecret: clientSecret!,
+      tenantId: tenantId!,
     };
 
     // Initialize Azure credential
@@ -35,9 +55,10 @@ export class AzureApiClient {
       this.config.clientSecret
     );
 
-    this.logger.info('Azure API client initialized', {
+    this.logger.info('Azure API client initialized successfully', {
       apiUrl: this.config.apiUrl,
       tenantId: this.config.tenantId,
+      clientId: this.config.clientId.substring(0, 8) + '...',
     });
   }
 

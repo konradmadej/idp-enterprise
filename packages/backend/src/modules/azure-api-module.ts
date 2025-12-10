@@ -1,18 +1,17 @@
 import { 
   coreServices,
-  createBackendModule,
+  createBackendPlugin,
 } from '@backstage/backend-plugin-api';
 import { createRouter } from './azure-api-router';
 
 /**
- * Azure API backend module
+ * Azure API backend plugin
  * 
- * This module provides an API endpoint for creating Azure resources
+ * This plugin provides an API endpoint for creating Azure resources
  * through an internal Azure-authenticated API.
  */
-export const azureApiModule = createBackendModule({
-  pluginId: 'azureApi',
-  moduleId: 'default',
+export const azureApiPlugin = createBackendPlugin({
+  pluginId: 'azure-api',
   register(env) {
     env.registerInit({
       deps: {
@@ -21,7 +20,7 @@ export const azureApiModule = createBackendModule({
         config: coreServices.rootConfig,
       },
       async init({ http, logger, config }) {
-        logger.info('Initializing Azure API module');
+        logger.info('Initializing Azure API plugin');
         
         const router = await createRouter({
           logger,
@@ -29,10 +28,10 @@ export const azureApiModule = createBackendModule({
         });
 
         http.use(router);
-        logger.info('Azure API module initialized');
+        logger.info('Azure API plugin initialized and router mounted');
       },
     });
   },
 });
 
-export default azureApiModule;
+export default azureApiPlugin;
