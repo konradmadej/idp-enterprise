@@ -19,6 +19,8 @@ backend.add(import('@backstage/plugin-scaffolder-backend-module-github'));
 backend.add(
   import('@backstage/plugin-scaffolder-backend-module-notifications'),
 );
+// Add custom CodeBlue actions
+backend.add(import('./modules/azure-api-actions-module'));
 
 // techdocs plugin
 backend.add(import('@backstage/plugin-techdocs-backend'));
@@ -39,9 +41,6 @@ backend.add(import('./modules/msgraph-module'));
 backend.add(
   import('@backstage/plugin-catalog-backend-module-scaffolder-entity-model'),
 );
-
-// Azure API module for internal resource management
-backend.add(import('./modules/azure-api-module'));
 
 // See https://backstage.io/docs/features/software-catalog/configuration#subscribing-to-catalog-errors
 backend.add(import('@backstage/plugin-catalog-backend-module-logs'));

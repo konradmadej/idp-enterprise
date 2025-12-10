@@ -105,23 +105,12 @@ spec:
         message: 'System CID: ${{ steps["fetch-system-entity"].output.body.metadata.annotations["idp.company/cid"] }}'
 
     - id: create-keyvault
-      name: Call Key Vault Creation API
-      action: http:backstage:request
+      name: Create Key Vault for System
+      action: codeblue:keyvault:create
       input:
-        method: POST
-        path: '/api/proxy/keyvault-api/keyvault/create'
-        headers:
-          Content-Type: 'application/json'
-        body:
-          cid: ${{ steps["fetch-system-entity"].output.body.metadata.annotations["idp.company/cid"] }}
-          vaultName: ${{ parameters.vaultName }}
-          location: ${{ parameters.location }}
-          environment: ${{ parameters.environment }}
-          resourceGroup: ${{ parameters.resourceGroup || steps["fetch-system-entity"].output.body.spec.domain }}
-          systemName: ${{ steps["fetch-system-entity"].output.body.metadata.name }}
-          businessOwner: ${{ steps["fetch-system-entity"].output.body.metadata.annotations["idp.company/business-owner"] }}
-          technicalOwner: ${{ steps["fetch-system-entity"].output.body.metadata.annotations["idp.company/technical-owner"] }}
-          description: ${{ parameters.description }}
+        systemName: ${{ steps["fetch-system-entity"].output.body.metadata.name }}
+        environment: ${{ parameters.environment }}
+        region: ${{ parameters.location }}
 
     - id: register-component
       name: Register Component in Catalog
@@ -146,11 +135,10 @@ spec:
 
           A Key Vault has been created with the following details:
 
-          - **Vault Name**: ${{ parameters.vaultName }}
           - **System**: ${{ steps["fetch-system-entity"].output.body.metadata.name }}
-          - **CID**: ${{ steps["fetch-system-entity"].output.body.metadata.annotations["idp.company/cid"] }}
-          - **Location**: ${{ parameters.location }}
+          - **Status**: ${{ steps["create-keyvault"].output.success ? '✅ Success' : '❌ Failed' }}
+          - **Key Vault Name**: ${{ steps["create-keyvault"].output.keyVaultName || 'N/A' }}
           - **Environment**: ${{ parameters.environment }}
-          - **Resource Group**: ${{ parameters.resourceGroup || steps["fetch-system-entity"].output.body.spec.domain }}
-
-          **API Response**: ${{ steps["create-keyvault"].output.body }}
+          - **Region**: ${{ parameters.location }}
+          - **Message**: ${{ steps["create-keyvault"].output.message || 'No message' }}
+          - **CID**: ${{ steps["fetch-system-entity"].output.body.metadata.annotations["idp.company/cid"] }}

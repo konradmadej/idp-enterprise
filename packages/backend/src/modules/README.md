@@ -1,12 +1,16 @@
-# Azure API Backend Module
+# Backend Modules
 
-This backend module provides integration with an internal Azure API for creating and managing Azure resources. It uses Azure Service Principal authentication with client credentials flow.
+This directory contains custom backend modules and scaffolder actions for the Backstage application.
 
-## Features
+## Azure Key Vault Scaffolder Action
 
-- **Azure Authentication**: Uses Azure Service Principal (client ID, client secret, tenant ID) for secure API access
-- **Key Vault Creation**: Endpoint to create Azure Key Vaults for systems via internal API
-- **Configurable**: All connection details are configurable through environment variables
+A custom scaffolder action that creates Azure Key Vaults through an internal Azure API using Azure Service Principal authentication.
+
+### Features
+
+- **Direct Integration**: Action calls Azure API directly from templates - no proxy needed
+- **Azure Authentication**: Handles Azure AD authentication automatically using Service Principal
+- **Simple to Use**: Just provide a system name in your template
 - **Error Handling**: Comprehensive error handling and logging
 
 ## Configuration
@@ -38,184 +42,164 @@ AZURE_API_CLIENT_SECRET=your-client-secret-here
 AZURE_API_TENANT_ID=87654321-4321-4321-4321-cba987654321
 ```
 
-## API Endpoints
+## Using in Templates
 
-### Create Key Vault
-
-**Endpoint**: `POST /api/azure-api/create-keyvault`
-
-**Request Body**:
-```json
-{
-  "systemName": "my-system"
-}
-```
-
-**Response** (Success - 200):
-```json
-{
-  "success": true,
-  "keyVaultName": "my-system-kv",
-  "message": "Key Vault created successfully"
-}
-```
-
-**Response** (Error - 400/500):
-```json
-{
-  "success": false,
-  "message": "Error description"
-}
-```
-
-### Health Check
-
-**Endpoint**: `GET /api/azure-api/health`
-
-**Response** (200):
-```json
-{
-  "status": "ok"
-}
-```
-
-## Usage Examples
-
-### cURL
-
-```bash
-curl -X POST http://localhost:7007/api/azure-api/create-keyvault \
-  -H "Content-Type: application/json" \
-  -d '{"systemName": "my-system"}'
-```
-
-### JavaScript/TypeScript
-
-```typescript
-const response = await fetch('http://localhost:7007/api/azure-api/create-keyvault', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({ systemName: 'my-system' }),
-});
-
-const result = await response.json();
-console.log(result);
-```
-
-### From a Backstage Template
-
-You can use this in your Backstage templates with the `http:backstage:request` action:
+Add the action to your Backstage template:
 
 ```yaml
 steps:
   - id: create-keyvault
     name: Create Key Vault
-    action: http:backstage:request
+    action: azure:keyvault:create
     input:
-      method: POST
-      path: '/api/azure-api/create-keyvault'
-      body:
-        systemName: ${{ parameters.systemName }}
+      systemName: ${{ parameters.systemName }}
 ```
 
-## Architecture
+### Action Outputs
 
-### Components
+| Output | Type | Description |
+|--------|------|-------------|
+| `success` | boolean | Whether the operation succeeded |
+| `keyVaultName` | string | Name of the created Key Vault |
+| `message` | string | Success or error message |
 
-1. **azure-api-client.ts** - Core client that handles Azure authentication and API calls
-2. **azure-api-router.ts** - Express router that defines the API endpoints
-3. **azure-api-module.ts** - Backstage backend module that registers the router
+### Access Outputs
+
+```yaml
+output:
+  text:
+    - title: Result
+      content: |
+        Key Vault: ${{ steps['create-keyvault'].output.keyVaultName }}
+        Status: ${{ steps['create-keyvault'].output.success }}
+```
+
+## Files
+
+- **azure-api-actions.ts** - Defines the `azure:keyvault:create` scaffolder action
+- **azure-api-actions-module.ts** - Registers the action with the scaffolder plugin
+- **msgraph-module.ts** - Custom Microsoft Graph module for user transformations
+- **msgraph-transformers.ts** - Transformers for employee ID from Microsoft Graph
+
+## How It Works
+
+### Architecture
+
+1. **Template Execution** - User runs a template that includes the `azure:keyvault:create` action
+2. **Action Handler** - Action reads configuration from `app-config.yaml`
+3. **Authentication** - Creates Azure Service Principal credential and acquires access token
+4. **API Call** - Makes authenticated POST request to internal Azure API
+5. **Response** - Returns success status, Key Vault name, and message to template
 
 ### Authentication Flow
 
-1. The client initializes with Azure Service Principal credentials
-2. When an API call is made, the client requests an access token from Azure AD
-3. The token is used as a Bearer token in the Authorization header
-4. The internal API validates the token and processes the request
+1. Action initializes with Service Principal credentials from config
+2. Requests access token from Azure AD using client credentials flow
+3. Token is included as Bearer token in Authorization header
+4. Internal API validates the token and creates the Key Vault
 
 ## Development
 
-### Running Locally
+### Testing the Action
 
-1. Set the required environment variables in your `.env` file
-2. Install dependencies:
+1. Create a test template in `examples/templates/`
+2. Add the action to a step
+3. Run the template from Backstage UI at `/create`
+4. Check backend logs for action execution
+
+### Local Development
+
+1. Set environment variables in `.env`:
    ```bash
-   yarn install
+   AZURE_INTERNAL_API_URL=https://your-api.com
+   AZURE_API_CLIENT_ID=your-client-id
+   AZURE_API_CLIENT_SECRET=your-secret
+   AZURE_API_TENANT_ID=your-tenant-id
    ```
-3. Start the backend:
+
+2. Start the backend:
    ```bash
    yarn workspace backend start
    ```
-4. Test the endpoint:
-   ```bash
-   curl http://localhost:7007/api/azure-api/health
-   ```
 
-### Testing
-
-You can test the authentication and API calls by:
-
-1. Checking the health endpoint
-2. Making a test call to create-keyvault with a test system name
-3. Reviewing the logs for any authentication or API errors
+3. The action will be available as `azure:keyvault:create`
 
 ## Security Considerations
 
-- **Secrets Management**: Never commit secrets to version control. Use environment variables or a secrets manager
-- **Token Caching**: The Azure Identity library handles token caching and refresh automatically
-- **Scope**: Adjust the token scope in `azure-api-client.ts` based on your API's requirements
-- **HTTPS**: Always use HTTPS in production for the internal API URL
-- **Network Security**: Ensure the internal API is only accessible from trusted networks
+- **Secrets Management**: Never commit secrets - use environment variables
+- **Token Caching**: Azure Identity library handles token caching and refresh
+- **Scope**: Token scope is `${apiUrl}/.default` - adjust if needed in `azure-api-actions.ts`
+- **HTTPS**: Always use HTTPS in production for the API URL
+- **Network Security**: Ensure internal API is only accessible from trusted networks
+- **Credentials**: Service Principal credentials are read at action execution time
 
 ## Troubleshooting
 
-### Authentication Errors
+### Action Not Registered
 
-- Verify your Service Principal has the correct permissions
-- Check that the tenant ID, client ID, and client secret are correct
-- Ensure the API URL is accessible from your backend
+**Error**: `Template action with ID azure:keyvault:create is not registered`
+
+**Solution**: 
+- Verify `azure-api-actions-module` is imported in `packages/backend/src/index.ts`
+- Restart the backend
+- Check logs for module initialization errors
+
+### Configuration Missing
+
+**Error**: `Azure API configuration not found`
+
+**Solution**:
+- Add `azureApi` section to `app-config.yaml`
+- Set all four required environment variables
+- Restart the backend
+
+### Authentication Failures
+
+**Error**: `Failed to acquire access token`
+
+**Solution**:
+- Verify Service Principal credentials are correct
+- Check Service Principal has required API permissions
+- Ensure tenant ID matches the Service Principal's tenant
 
 ### API Call Failures
 
-- Check the logs for detailed error messages
-- Verify the internal API is running and accessible
-- Ensure the API endpoint `/create-keyvault` exists and accepts the expected payload
+**Error**: `API request failed with status XXX`
 
-### Token Scope Issues
+**Solution**:
+- Check backend logs for detailed error
+- Verify internal API is accessible
+- Ensure API accepts POST to `/create-keyvault` with `systemName` in body
+- Check token scope matches API requirements
 
-If you get 401/403 errors, you may need to adjust the token scope:
+## Adding More Actions
 
-```typescript
-// In azure-api-client.ts, modify the scope:
-const tokenResponse = await this.credential.getToken([
-  `api://your-api-app-id/.default`,
-]);
-```
+To add more Azure API actions:
 
-## Extending the Module
+1. Add a new action function in `azure-api-actions.ts`:
+   ```typescript
+   export const createAzureStorageAction = (config: Config) => {
+     return createTemplateAction({
+       id: 'azure:storage:create',
+       schema: { /* ... */ },
+       async handler(ctx) {
+         // Implementation
+       },
+     });
+   };
+   ```
 
-To add more endpoints:
+2. Register it in `azure-api-actions-module.ts`:
+   ```typescript
+   scaffolder.addActions(
+     createAzureKeyVaultAction(config),
+     createAzureStorageAction(config)
+   );
+   ```
 
-1. Add the method to `AzureApiClient` class in `azure-api-client.ts`
-2. Add the route handler in `azure-api-router.ts`
-3. Update this documentation
-
-Example:
-
-```typescript
-// In azure-api-client.ts
-async deleteKeyVault(systemName: string): Promise<DeleteResponse> {
-  const token = await this.getAccessToken();
-  const url = `${this.config.apiUrl}/delete-keyvault`;
-  // ... implementation
-}
-
-// In azure-api-router.ts
-router.delete('/delete-keyvault/:systemName', async (req, res) => {
-  const { systemName } = req.params;
-  const result = await azureClient.deleteKeyVault(systemName);
-  res.json(result);
-});
-```
+3. Use it in templates:
+   ```yaml
+   - action: azure:storage:create
+     input:
+       storageAccountName: ${{ parameters.name }}
+   ```

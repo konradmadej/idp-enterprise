@@ -1,0 +1,90 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: simple-keyvault-example
+  title: Simple Key Vault Creation Example
+  description: A simple example showing how to call the Azure API endpoint from a template
+  tags:
+    - azure
+    - keyvault
+    - example
+spec:
+  owner: group:default/idpadmins
+  type: service
+
+  parameters:
+    - title: Basic Information
+      required:
+        - systemName
+        - environment
+        - region
+      properties:
+        systemName:
+          title: System Name
+          type: string
+          description: Name of the system that needs a Key Vault
+          ui:help: 'Example: customer-360, sales-pipeline, etc.'
+        
+        environment:
+          title: Environment
+          type: string
+          description: Environment for the Key Vault
+          default: production
+          enum:
+            - development
+            - staging
+            - production
+          enumNames:
+            - Development
+            - Staging
+            - Production
+        
+        region:
+          title: Azure Region
+          type: string
+          description: Azure region where the Key Vault will be created
+          default: eastus
+          enum:
+            - eastus
+            - westus2
+            - centralus
+            - northeurope
+            - westeurope
+            - southeastasia
+          enumNames:
+            - 'East US'
+            - 'West US 2'
+            - 'Central US'
+            - 'North Europe'
+            - 'West Europe'
+            - 'Southeast Asia'
+
+  steps:
+    - id: create-keyvault
+      name: Create Key Vault for System
+      action: codeblue:keyvault:create
+      input:
+        systemName: ${{ parameters.systemName }}
+        environment: ${{ parameters.environment }}
+        region: ${{ parameters.region }}
+
+    - id: log-result
+      name: Log Result
+      action: debug:log
+      input:
+        message: 'Key Vault creation result: ${{ steps["create-keyvault"].output.body | dump }}'
+
+  output:
+    text:
+      - title: Key Vault Creation Result
+        content: |
+          ## Result
+
+          - **Status**: ${{ steps["create-keyvault"].output.success ? '✅ Success' : '❌ Failed' }}
+          - **Key Vault Name**: ${{ steps["create-keyvault"].output.keyVaultName || 'N/A' }}
+          - **Environment**: ${{ parameters.environment }}
+          - **Region**: ${{ parameters.region }}
+          - **Message**: ${{ steps["create-keyvault"].output.message || 'No message provided' }}
+
+          ### System
+          Created Key Vault for system: **${{ parameters.systemName }}**

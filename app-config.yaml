@@ -92,13 +92,17 @@ auth:
 
 scaffolder:
   # see https://backstage.io/docs/features/software-templates/configuration for software template options
+  defaultAuthor:
+    name: Scaffolder
+    email: scaffolder@example.com
+  defaultCommitMessage: 'Initial commit from Backstage'
 
-# Azure API configuration for internal resource management
-azureApi:
-  apiUrl: ${AZURE_INTERNAL_API_URL}
-  clientId: ${AZURE_API_CLIENT_ID}
-  clientSecret: ${AZURE_API_CLIENT_SECRET}
-  tenantId: ${AZURE_API_TENANT_ID}
+# CodeBlue API configuration for internal resource management
+codeblue:
+  apiUrl: ${CODEBLUE_API_URL}
+  clientId: ${CODEBLUE_CLIENT_ID}
+  clientSecret: ${CODEBLUE_CLIENT_SECRET}
+  tenantId: ${CODEBLUE_TENANT_ID}
 
 catalog:
   import:
@@ -126,6 +130,12 @@ catalog:
     # FastAPI application template
     - type: file
       target: ../../examples/templates/fastapi-app/template.yaml
+      rules:
+        - allow: [Template]
+
+    # Simple Azure API example template
+    - type: file
+      target: ../../examples/templates/simple-azure-api-example/template.yaml
       rules:
         - allow: [Template]
 
