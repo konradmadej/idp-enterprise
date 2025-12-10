@@ -16,7 +16,7 @@ export class AzureApiClient {
     this.logger = logger;
     
     // Read configuration
-    const azureApiConfig = config.getOptionalConfig('azureApi');
+    const azureApiConfig = config.getOptionalConfig('azurePluginApi');
     if (!azureApiConfig) {
       const errorMsg = 'Azure API configuration not found in app-config.yaml. Please add the azureApi section with apiUrl, clientId, clientSecret, and tenantId.';
       this.logger.error(errorMsg);

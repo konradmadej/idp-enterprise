@@ -28,7 +28,15 @@ export const azureApiPlugin = createBackendPlugin({
         });
 
         http.use(router);
-        logger.info('Azure API plugin initialized and router mounted');
+        http.addAuthPolicy({
+          path: '/health',
+          allow: 'unauthenticated',
+        });
+        http.addAuthPolicy({
+          path: '/create-keyvault',
+          allow: 'unauthenticated',
+        });
+        logger.info('Azure API plugin initialized and router mounted at /api/azure-api');
       },
     });
   },

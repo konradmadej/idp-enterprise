@@ -25,6 +25,17 @@ export async function createRouter(
 
   logger.info('Azure API router created, registering endpoints');
 
+  // Add a root endpoint to verify routing is working
+  router.get('/', async (_req, res) => {
+    res.json({ 
+      service: 'Azure API',
+      endpoints: [
+        'GET /health',
+        'POST /create-keyvault'
+      ]
+    });
+  });
+
   /**
    * POST /api/azure-api/create-keyvault
    * 
@@ -41,6 +52,7 @@ export async function createRouter(
    * }
    */
   router.post('/create-keyvault', async (req, res) => {
+    logger.info('POST /create-keyvault endpoint hit');
     try {
       const { systemName } = req.body;
 
@@ -74,8 +86,10 @@ export async function createRouter(
    * Health check endpoint
    */
   router.get('/health', async (_req, res) => {
+    logger.info('GET /health endpoint hit');
     res.status(200).json({ status: 'ok' });
   });
 
+  logger.info('All Azure API routes registered successfully');
   return router;
 }
