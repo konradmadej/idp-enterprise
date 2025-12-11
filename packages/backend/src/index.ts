@@ -21,6 +21,8 @@ backend.add(
 );
 // Add custom CodeBlue actions
 backend.add(import('./modules/azure-api-actions-module'));
+// Add CodeBlue status sync scheduled task
+backend.add(import('./modules/codeblue-status-sync-module'));
 
 // techdocs plugin
 backend.add(import('@backstage/plugin-techdocs-backend'));

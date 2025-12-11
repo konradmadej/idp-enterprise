@@ -1,9 +1,9 @@
 import { createBackendModule, coreServices } from '@backstage/backend-plugin-api';
 import { scaffolderActionsExtensionPoint } from '@backstage/plugin-scaffolder-node/alpha';
-import { createAzureKeyVaultAction } from './azure-api-actions';
+import { createAzureKeyVaultAction, checkAzureKeyVaultStatusAction } from './azure-api-actions';
 
 /**
- * Module that registers CodeBlue Key Vault scaffolder action
+ * Module that registers CodeBlue Key Vault scaffolder actions
  */
 export const codeblueActionsModule = createBackendModule({
   pluginId: 'scaffolder',
@@ -15,7 +15,10 @@ export const codeblueActionsModule = createBackendModule({
         config: coreServices.rootConfig,
       },
       async init({ scaffolder, config }) {
-        scaffolder.addActions(createAzureKeyVaultAction(config));
+        scaffolder.addActions(
+          createAzureKeyVaultAction(config),
+          checkAzureKeyVaultStatusAction(config),
+        );
       },
     });
   },

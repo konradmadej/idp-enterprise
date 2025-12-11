@@ -1,10 +1,18 @@
-# Using CodeBlue Key Vault Action in Backstage Templates
+# Using CodeBlue Key Vault Actions in Backstage Templates
 
-This guide shows you how to create Azure Key Vaults from Backstage templates using the custom `codeblue:keyvault:create` action.
+This guide shows you how to create and check Azure Key Vaults from Backstage templates using the custom CodeBlue actions.
+
+## Available Actions
+
+### 1. `codeblue:keyvault:create`
+Creates a new Azure Key Vault asynchronously.
+
+### 2. `codeblue:keyvault:check-status`
+Checks the provisioning status of a Key Vault with retry logic.
 
 ## Basic Usage
 
-The simplest way to create a Key Vault:
+### Creating a Key Vault
 
 ```yaml
 steps:
@@ -22,13 +30,64 @@ The action handles everything automatically:
 - **API Call** - Makes authenticated request to your internal Azure API
 - **Error Handling** - Provides clear error messages if something fails
 
-### Required Input Properties
+### Checking Key Vault Status
+
+```yaml
+steps:
+  - id: check-status
+    name: Wait for Key Vault Provisioning
+    action: codeblue:keyvault:check-status
+    input:
+      keyVaultName: ${{ steps['create-keyvault'].output.keyVaultName }}
+      maxAttempts: 10  # Check up to 10 times (optional, default: 10)
+      intervalSeconds: 30  # Wait 30 seconds between checks (optional, default: 30)
+```
+
+### Complete Example: Create and Wait
+
+```yaml
+steps:
+  - id: create-keyvault
+    name: Create Key Vault
+    action: codeblue:keyvault:create
+    input:
+      systemName: ${{ parameters.systemName }}
+      environment: ${{ parameters.environment }}
+      region: ${{ parameters.region }}
+
+  - id: check-status
+    name: Wait for Provisioning
+    action: codeblue:keyvault:check-status
+    input:
+      keyVaultName: ${{ steps['create-keyvault'].output.keyVaultName }}
+      maxAttempts: 20
+      intervalSeconds: 30
+
+  - id: log-result
+    name: Log Result
+    if: ${{ steps['check-status'].output.provisioned === true }}
+    action: debug:log
+    input:
+      message: 'Key Vault successfully provisioned!'
+```
+
+## Input Properties
+
+### `codeblue:keyvault:create`
 
 | Property | Type | Description |
 |----------|------|-------------|
 | `systemName` | string | Name of the system that needs a Key Vault |
 | `environment` | string | Environment (e.g., development, staging, production) |
 | `region` | string | Azure region (e.g., eastus, westeurope) |
+
+### `codeblue:keyvault:check-status`
+
+| Property | Required | Type | Description |
+|----------|----------|------|-------------|
+| `keyVaultName` | Yes | string | Name of the Key Vault to check |
+| `maxAttempts` | No | number | Maximum number of status checks (default: 10) |
+| `intervalSeconds` | No | number | Seconds to wait between checks (default: 30) |
 
 ## Accessing the Response
 
@@ -217,6 +276,41 @@ steps:
 4. Click "Create"
 5. Monitor the execution logs
 6. Check the output for the result
+
+## Automated Status Synchronization
+
+### Background Sync Job
+
+Backstage automatically runs a scheduled job that:
+1. Scans all `keyvault` components in the catalog
+2. Checks provisioning status for unprovisioned vaults
+3. Updates catalog entities when provisioning completes
+
+**Default Schedule**: Every 5 minutes
+
+**Configuration** (`app-config.yaml`):
+```yaml
+codeblue:
+  statusSync:
+    frequency: '*/5 * * * *'  # Cron expression
+    timeout: 300000  # Timeout in milliseconds
+```
+
+**Entity Annotations**:
+- `codeblue.com/provisioning-status`: Current status (`provisioned` or empty)
+- `codeblue.com/provisioning-status-updated`: ISO timestamp of last update
+
+### When to Use Each Approach
+
+**Use `codeblue:keyvault:check-status` action when:**
+- Template needs to wait for provisioning before proceeding
+- Immediate feedback is required
+- Template performs additional steps after provisioning
+
+**Rely on background sync job when:**
+- Template can complete without waiting
+- User can check status later in catalog
+- Reducing template execution time is important
 
 ## Common Issues
 

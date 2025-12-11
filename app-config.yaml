@@ -100,9 +100,15 @@ scaffolder:
 # CodeBlue API configuration for internal resource management
 codeblue:
   apiUrl: ${CODEBLUE_API_URL}
+  # Azure AD authentication scope for the API (e.g., api://codeblue-api-client-id/.default)
+  apiScope: ${CODEBLUE_API_SCOPE}
   clientId: ${CODEBLUE_CLIENT_ID}
   clientSecret: ${CODEBLUE_CLIENT_SECRET}
   tenantId: ${CODEBLUE_TENANT_ID}
+  # Status sync job configuration (optional)
+  statusSync:
+    frequency: '*/5 * * * *'  # Run every 5 minutes (cron format)
+    timeout: 300000  # 5 minutes in milliseconds
 
 catalog:
   import:

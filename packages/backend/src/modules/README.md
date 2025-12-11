@@ -76,8 +76,11 @@ output:
 
 ## Files
 
-- **azure-api-actions.ts** - Defines the `azure:keyvault:create` scaffolder action
-- **azure-api-actions-module.ts** - Registers the action with the scaffolder plugin
+- **azure-api-actions.ts** - Defines scaffolder actions:
+  - `codeblue:keyvault:create` - Create Azure Key Vault
+  - `codeblue:keyvault:check-status` - Check provisioning status with retry logic
+- **azure-api-actions-module.ts** - Registers the actions with the scaffolder plugin
+- **codeblue-status-sync-module.ts** - Scheduled job to sync Key Vault provisioning status to catalog
 - **msgraph-module.ts** - Custom Microsoft Graph module for user transformations
 - **msgraph-transformers.ts** - Transformers for employee ID from Microsoft Graph
 

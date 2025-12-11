@@ -1,0 +1,95 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: keyvault-with-status-check
+  title: Create Key Vault with Status Check
+  description: Create an Azure Key Vault and wait for provisioning to complete
+  tags:
+    - azure
+    - keyvault
+    - codeblue
+spec:
+  owner: group:default/idpadmins
+  type: service
+
+  parameters:
+    - title: System Information
+      required:
+        - systemName
+        - environment
+        - region
+      properties:
+        systemName:
+          title: System Name
+          type: string
+          description: Name of the system that needs a Key Vault
+          ui:autofocus: true
+        environment:
+          title: Environment
+          type: string
+          description: Deployment environment
+          enum:
+            - development
+            - staging
+            - production
+          enumNames:
+            - 'Development'
+            - 'Staging'
+            - 'Production'
+        region:
+          title: Azure Region
+          type: string
+          description: Azure region for the Key Vault
+          enum:
+            - eastus
+            - eastus2
+            - westus
+            - westus2
+            - centralus
+            - northeurope
+            - westeurope
+          default: eastus
+
+  steps:
+    - id: create-keyvault
+      name: Create Key Vault
+      action: codeblue:keyvault:create
+      input:
+        systemName: ${{ parameters.systemName }}
+        environment: ${{ parameters.environment }}
+        region: ${{ parameters.region }}
+
+    - id: wait-for-provisioning
+      name: Wait for Key Vault Provisioning
+      action: codeblue:keyvault:check-status
+      input:
+        keyVaultName: ${{ steps['create-keyvault'].output.keyVaultName }}
+        maxAttempts: 20
+        intervalSeconds: 30
+
+  output:
+    links:
+      - title: View in Azure Portal
+        icon: cloud
+        url: https://portal.azure.com/#view/HubsExtension/BrowseResource/resourceType/Microsoft.KeyVault%2Fvaults
+
+    text:
+      - title: Key Vault Provisioning Status
+        content: |
+          ## Key Vault Creation Result
+
+          **Key Vault Name**: `${{ steps['create-keyvault'].output.keyVaultName }}`
+          
+          **System**: ${{ parameters.systemName }}
+          
+          **Environment**: ${{ parameters.environment }}
+          
+          **Region**: ${{ parameters.region }}
+          
+          **Provisioning Status**: ${{ steps['wait-for-provisioning'].output.provisioned ? '✅ Provisioned' : '⏳ Pending' }}
+          
+          ${{ steps['wait-for-provisioning'].output.message }}
+
+          ---
+
+          ${{ steps['wait-for-provisioning'].output.provisioned === false ? '**Note**: The Key Vault creation has been initiated but provisioning is not yet complete. The automated sync job will continue monitoring and update the catalog entity once provisioning completes.' : 'Your Key Vault is ready to use!' }}
